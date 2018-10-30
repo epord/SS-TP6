@@ -3,6 +3,7 @@ package Models;
 import Helpers.AnimationBuilder;
 import Helpers.FileManager;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,8 @@ public class Room {
     private List<Wall> walls;
     private List<Particle> persons;
     private Vector escapePoint;
+    private Double roomSize;
+    private Double doorWidth;
 
     private Double Rmin = 0.2; // m
     private Double Rmax = 0.6; // m
@@ -23,10 +26,22 @@ public class Room {
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
 
-    public Room(List<Wall> walls, List<Particle> persons, Vector escapePoint) {
-        this.walls = walls;
+    public Room(List<Particle> persons, Double roomSize, Double doorWidth) {
         this.persons = persons;
-        this.escapePoint = escapePoint;
+        this.roomSize = roomSize;
+        this.doorWidth = doorWidth;
+
+        this.walls = generateWalls(roomSize, doorWidth);
+        this.escapePoint = new Vector(roomSize, roomSize/2);
+    }
+
+    private List<Wall> generateWalls(Double roomSize, Double doorWidth) {
+        Wall top = new Wall(new Vector(roomSize, roomSize), new Vector(0.0, roomSize));
+        Wall left = new Wall(new Vector(0.0, roomSize), new Vector(0.0, 0.0));
+        Wall bottom = new Wall(new Vector(0.0, 0.0), new Vector(roomSize, 0.0));
+        Wall right1 = new Wall(new Vector(roomSize, 0.0), new Vector(roomSize, (roomSize - doorWidth)/2));
+        Wall right2 = new Wall(new Vector(roomSize, (roomSize + doorWidth)/2), new Vector(roomSize, roomSize));
+        return Arrays.asList(top, left, bottom, right1, right2);
     }
 
     public void addWall(Wall wall) {
@@ -53,15 +68,21 @@ public class Room {
                                             .filter(wall -> person.isCollidingWith(wall))
                                             .collect(Collectors.toList());
 
+                Vector velocityVersor, position;
+                Double speed, radius;
                 if (personCollisions.size() == 0 && wallsCollisions.size() == 0) {
-                    Vector velocityVersor = escapePoint.subtract(person.getPosition()).normalize();
-                    Double speed = maxSpeed * Math.pow((person.getRadius() - Rmin) / (Rmax - Rmin), beta);
-                    Vector velocity = velocityVersor.dot(speed);
-                    Vector position = person.getPosition().add(velocity.dot(deltaT));
-                    Double radius = Math.min(person.getRadius() + Rmax / (tau / deltaT), Rmax);
-                    return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
+                    // Not colliding
+                    if (person.getPosition().getX() > roomSize || person.getPosition().subtract(escapePoint).norm() < 0.3) {
+                        // Got out
+                        velocityVersor = new Vector(100.0, escapePoint.getY()).subtract(person.getPosition()).normalize();
+                    } else {
+                        velocityVersor = escapePoint.subtract(person.getPosition()).normalize();
+                    }
+                    speed = maxSpeed * Math.pow((person.getRadius() - Rmin) / (Rmax - Rmin), beta);
+                    radius = Math.min(person.getRadius() + Rmax / (tau / deltaT), Rmax);
                 } else {
-                    Vector velocityVersor = new Vector();
+                    // Colliding
+                    velocityVersor = new Vector();
                     for(Particle other: personCollisions) {
                         velocityVersor = velocityVersor.add(person.getPosition().subtract(other.getPosition()));
                     }
@@ -69,10 +90,12 @@ public class Room {
                         velocityVersor = velocityVersor.add(wall.getNormalVersor());
                     }
                     velocityVersor = velocityVersor.normalize();
-                    Vector velocity = velocityVersor.dot(escapingSpeed);
-                    Vector position = person.getPosition().add(velocity.dot(deltaT));
-                    return person.getCopyWithRadius(Rmin).getCopyWithPosition(position).getCopyWithVelocity(velocity);
+                    speed = escapingSpeed;
+                    radius = Rmin;
                 }
+                Vector velocity = velocityVersor.dot(speed);
+                position = person.getPosition().add(velocity.dot(deltaT));
+                return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
             }).collect(Collectors.toList());
 
             if (animationCurrentFrame <= t * animationFramePerSecond) {

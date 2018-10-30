@@ -11,13 +11,6 @@ public class Main {
     public static void main(String[] args) {
         Long startTime = System.currentTimeMillis();
 
-        Wall top = new Wall(new Vector(20.0, 20.0), new Vector(0.0, 20.0));
-        Wall left = new Wall(new Vector(0.0, 20.0), new Vector(0.0, 0.0));
-        Wall bottom = new Wall(new Vector(0.0, 0.0), new Vector(20.0, 0.0));
-        Wall right1 = new Wall(new Vector(20.0, 0.0), new Vector(20.0, 9.4));
-        Wall right2 = new Wall(new Vector(20.0, 10.6), new Vector(20.0, 20.0));
-        List<Wall> walls = Arrays.asList(top, left, bottom, right1, right2);
-
         Particle p1 = new Particle("1", new Vector(10.0, 15.0), 80.0, 0.25);
         Particle p2 = new Particle("2", new Vector(10.0, 10.0), 80.0, 0.25);
         Particle p3 = new Particle("3", new Vector(10.0, 5.0), 80.0, 0.5);
@@ -26,7 +19,7 @@ public class Main {
 
         Vector escapePoint = new Vector(20.0, 10.0);
 
-        Room room = new Room(walls, persons, escapePoint);
+        Room room = new Room(persons, 20.0, 1.2);
         room.simulateEscape();
 
 
