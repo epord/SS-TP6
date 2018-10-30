@@ -13,12 +13,12 @@ public class Room {
 
     private Double Rmin = 0.2; // m
     private Double Rmax = 0.6; // m
-    private Double maxSpeed = 1.5; // m/s
+    private Double maxSpeed = 3.2; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
     private double tau = 1.0;
 
-    private Double deltaT = 0.1; // s
+    private Double deltaT = 0.01; // s
     private Double simulationTime = 20.0; // s
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
@@ -42,13 +42,18 @@ public class Room {
         FileManager fm = new FileManager();
 
         for (Double t = 0.0; t < simulationTime; t += deltaT) {
-            persons = persons.stream().map(person -> {
-                List<Particle> colliders = persons
-                                            .stream()
+            persons = persons.parallelStream().map(person -> {
+                List<Particle> personCollisions = persons
+                                            .parallelStream()
                                             .filter(other -> !person.equals(other) && person.isCollidingWith(other))
                                             .collect(Collectors.toList());
 
-                if (colliders.size() == 0) {
+                List<Wall> wallsCollisions = walls
+                                            .parallelStream()
+                                            .filter(wall -> person.isCollidingWith(wall))
+                                            .collect(Collectors.toList());
+
+                if (personCollisions.size() == 0 && wallsCollisions.size() == 0) {
                     Vector velocityVersor = escapePoint.subtract(person.getPosition()).normalize();
                     Double speed = maxSpeed * Math.pow((person.getRadius() - Rmin) / (Rmax - Rmin), beta);
                     Vector velocity = velocityVersor.dot(speed);
@@ -57,8 +62,11 @@ public class Room {
                     return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
                 } else {
                     Vector velocityVersor = new Vector();
-                    for(Particle other: colliders) {
+                    for(Particle other: personCollisions) {
                         velocityVersor = velocityVersor.add(person.getPosition().subtract(other.getPosition()));
+                    }
+                    for(Wall wall: wallsCollisions) {
+                        velocityVersor = velocityVersor.add(wall.getNormalVersor());
                     }
                     velocityVersor = velocityVersor.normalize();
                     Vector velocity = velocityVersor.dot(escapingSpeed);

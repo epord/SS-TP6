@@ -83,6 +83,10 @@ public class Particle {
         return getPosition().distance(particle.getPosition()) < getRadius() + particle.getRadius();
     }
 
+    public Boolean isCollidingWith(Wall wall) {
+        return wall.distanceToParticle(this) < getRadius();
+    }
+
 
     @Override
     public boolean equals(Object o) {

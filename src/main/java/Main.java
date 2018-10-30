@@ -3,7 +3,6 @@ import Models.Room;
 import Models.Vector;
 import Models.Wall;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -22,7 +21,7 @@ public class Main {
         Particle p1 = new Particle("1", new Vector(10.0, 15.0), 80.0, 0.25);
         Particle p2 = new Particle("2", new Vector(10.0, 10.0), 80.0, 0.25);
         Particle p3 = new Particle("3", new Vector(10.0, 5.0), 80.0, 0.5);
-        Particle p4 = new Particle("4", new Vector(10.5, 7.3), 80.0, 0.5);
+        Particle p4 = new Particle("4", new Vector(18.5, 7.3), 80.0, 0.5);
         List<Particle> persons = Arrays.asList(p1, p2, p3, p4);
 
         Vector escapePoint = new Vector(20.0, 10.0);
