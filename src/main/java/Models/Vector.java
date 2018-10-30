@@ -53,7 +53,7 @@ public class Vector {
         return this.dot(1.0 / norm);
     }
 
-//    Get angle from X axis
+    // Get positive angle from X axis in trigonometric direction
     public Double getAngle() {
         Double angle = Math.atan2(getY(), getX());
         if (angle < 0) return angle + 2 * Math.PI;
