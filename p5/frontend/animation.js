@@ -20,8 +20,6 @@ function setup() {
     readWalls(file[0].trim());
     readFrames(frames);
 
-    console.log(walls)
-
     time_checkpoint = millis();
 }
 
@@ -59,8 +57,6 @@ function draw() {
     drawParticles(current_frame);
     drawWalls();
     drawFrameRate();
-
-    rect(world2canvas(0), canvas_size - world2canvas(20), 3, 3);
 
     current_frame = (current_frame + (1 + frame_skipping)) % frames;
 }

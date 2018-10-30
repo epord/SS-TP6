@@ -16,6 +16,8 @@ public class Room {
     private Double maxSpeed = 1.5; // m/s
     private Double deltaT = 0.1;
     private Double simulationTime = 20.0;
+    private double beta = 1.0;
+    private double tau = 1.0;
 
     public Room(List<Wall> walls, List<Particle> persons, Vector escapePoint) {
         this.walls = walls;
@@ -38,10 +40,11 @@ public class Room {
         for (Double t = 0.0; t < simulationTime; t += deltaT) {
             persons = persons.parallelStream().map(person -> {
                 Vector velocityVersor = escapePoint.subtract(person.getPosition()).normalize();
-                Double speed = maxSpeed * (person.getRadius() - Rmin) / (Rmax - Rmin);
+                Double speed = maxSpeed * Math.pow((person.getRadius() - Rmin) / (Rmax - Rmin), beta);
                 Vector velocity = velocityVersor.dot(speed);
                 Vector position = person.getPosition().add(velocity.dot(deltaT));
-                return person.getCopyWithPosition(position).getCopyWithVelocity(velocity);
+                Double radius = Math.min(person.getRadius() + Rmax / (tau / deltaT), Rmax);
+                return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
             }).collect(Collectors.toList());
 
             ab.addParticlesforNextFrame(persons);
