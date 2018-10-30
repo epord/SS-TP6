@@ -74,6 +74,10 @@ public class Particle {
         return new Particle(id, position, velocity, newAcceleration, mass, radius);
     }
 
+    public Particle getCopyWithRadius(Double newRadius) {
+        return new Particle(id, position, velocity, acceleration, mass, newRadius);
+    }
+
 
     public Boolean isCollisioningWith(Particle particle) {
         return getPosition().distance(particle.getPosition()) < getRadius() + particle.getRadius();
