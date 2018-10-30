@@ -36,6 +36,10 @@ public class Particle {
         this(id,position,new Vector(0.0,0.0),new Vector(0.0,0.0),mass,radius);
     }
 
+    public Particle(Integer id, Vector position, Double mass, Double radius) {
+        this(id.toString(), position, new Vector(0.0,0.0), new Vector(0.0,0.0), mass, radius);
+    }
+
 
     public Vector getPosition() {
         return position;

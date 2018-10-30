@@ -19,7 +19,7 @@ public class Room {
     private Double maxSpeed = 3.2; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
-    private double tau = 1.0;
+    private double tau = 0.40;
 
     private Double deltaT = 0.01; // s
     private Double simulationTime = 20.0; // s
