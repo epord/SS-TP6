@@ -79,7 +79,7 @@ public class Particle {
     }
 
 
-    public Boolean isCollisioningWith(Particle particle) {
+    public Boolean isCollidingWith(Particle particle) {
         return getPosition().distance(particle.getPosition()) < getRadius() + particle.getRadius();
     }
 

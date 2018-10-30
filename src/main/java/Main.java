@@ -20,9 +20,10 @@ public class Main {
         List<Wall> walls = Arrays.asList(top, left, bottom, right1, right2);
 
         Particle p1 = new Particle("1", new Vector(10.0, 15.0), 80.0, 0.25);
-        Particle p2 = new Particle("1", new Vector(10.0, 10.0), 80.0, 0.25);
-        Particle p3 = new Particle("1", new Vector(10.0, 5.0), 80.0, 0.5);
-        List<Particle> persons = Arrays.asList(p1, p2, p3);
+        Particle p2 = new Particle("2", new Vector(10.0, 10.0), 80.0, 0.25);
+        Particle p3 = new Particle("3", new Vector(10.0, 5.0), 80.0, 0.5);
+        Particle p4 = new Particle("4", new Vector(10.5, 7.3), 80.0, 0.5);
+        List<Particle> persons = Arrays.asList(p1, p2, p3, p4);
 
         Vector escapePoint = new Vector(20.0, 10.0);
 
