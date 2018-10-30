@@ -9,7 +9,8 @@ import java.util.Random;
 public class Main {
 
     public static void main(String[] args) {
-        Long startTime = System.currentTimeMillis();
+        Long timeCheckpoint = System.currentTimeMillis();
+        Long startTime = timeCheckpoint;
 
 //        Particle p1 = new Particle("1", new Vector(10.0, 15.0), 80.0, 0.25);
 //        Particle p2 = new Particle("2", new Vector(10.0, 10.0), 80.0, 0.25);
@@ -17,17 +18,18 @@ public class Main {
 //        Particle p4 = new Particle("4", new Vector(18.5, 7.3), 80.0, 0.5);
 //        List<Particle> persons = Arrays.asList(p1, p2, p3, p4);
 
-        System.out.println("Generating persons..");
-        List<Particle> persons = generateParticles(0.4, 0.3, 10, 20.0);
-        System.out.println("All persons generated.\n");
+        System.out.println("Generating persons...");
+        List<Particle> persons = generateParticles(0.25, 0.29, 200, 20.0);
+        System.out.println(persons.size() + " persons generated in " + ((System.currentTimeMillis() - timeCheckpoint)/1000.0) + "s\n");
+        timeCheckpoint = System.currentTimeMillis();
 
         Room room = new Room(persons, 20.0, 1.2);
 
-        System.out.println("Escaping...\n");
+        System.out.println("Escaping...");
         room.simulateEscape();
+        System.out.println("Escape simulated finished in " + ((System.currentTimeMillis() - timeCheckpoint)/1000.0) + "s\n");
 
-        System.out.println("Simulation finished.");
-        System.out.println("Time elapsed: " + ((System.currentTimeMillis() - startTime)/1000.0) + " s");
+        System.out.println("Total time elapsed: " + ((System.currentTimeMillis() - startTime)/1000.0) + "s");
     }
 
     private static List<Particle> generateParticles(Double Rmin, Double Rmax, Integer amount, Double roomSize) {

@@ -14,15 +14,15 @@ public class Room {
     private Double roomSize;
     private Double doorWidth;
 
-    private Double Rmin = 0.2; // m
-    private Double Rmax = 0.6; // m
-    private Double maxSpeed = 3.2; // m/s
+    private Double Rmin = 0.15; // m
+    private Double Rmax = 0.32; // m
+    private Double maxSpeed = 0.6; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
     private double tau = 0.40;
 
     private Double deltaT = 0.01; // s
-    private Double simulationTime = 20.0; // s
+    private Double simulationTime = 90.0; // s
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
 
