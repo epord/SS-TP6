@@ -1,5 +1,6 @@
 package Models;
 
+import CellIndexMethod.CellGrid;
 import Helpers.AnimationBuilder;
 import Helpers.FileManager;
 
@@ -16,12 +17,12 @@ public class Room {
 
     private Double Rmin = 0.2; // m
     private Double Rmax = 0.37; // m
-    private Double maxSpeed = 4.0; // m/s
+    private Double maxSpeed = 1.2; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
     private double tau = 0.20;
 
-    private Double deltaT = 0.001; // s
+    private Double deltaT = 0.05; // s
     private Double simulationTime = 20.0; // s
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
@@ -98,12 +99,25 @@ public class Room {
                 return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
             }).collect(Collectors.toList());
 
-            if (animationCurrentFrame <= t * animationFramePerSecond) {
-                ab.addParticlesforNextFrame(persons);
-                animationCurrentFrame++;
-            }
+
+            deleteExitedPersons();
+            generateAnimationFrame(ab, t);
         }
 
         fm.writeString("p5/frontend/output.txt", ab.getString());
+    }
+
+    private void deleteExitedPersons() {
+        persons = persons
+                .parallelStream()
+                .filter(person -> person.getPosition().getX() < roomSize * 1.2)
+                .collect(Collectors.toList());
+    }
+
+    private void generateAnimationFrame(AnimationBuilder ab, Double time) {
+        if (animationCurrentFrame <= time * animationFramePerSecond) {
+            ab.addParticlesforNextFrame(persons);
+            animationCurrentFrame++;
+        }
     }
 }
