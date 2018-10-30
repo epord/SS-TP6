@@ -21,8 +21,8 @@ public class Room {
     private double beta = 1.0;
     private double tau = 0.20;
 
-    private Double deltaT = 0.01; // s
-    private Double simulationTime = 90.0; // s
+    private Double deltaT = 0.001; // s
+    private Double simulationTime = 20.0; // s
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
 

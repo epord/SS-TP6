@@ -50,7 +50,7 @@ getParticlesFromFrame = frame => {
 }
 
 var current_frame = 0;
-var frame_skipping = 0; // amount of frames to skip
+var frame_skipping = 1; // amount of frames to skip
 function draw() {
     background(24);
 
@@ -77,7 +77,7 @@ drawParticle = particle => {
 
     var c = color(255, 0, 0);
     fill(c);
-    ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.27 * 2));
+    ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.2 * 2));
 };
 
 drawParticles = frame => {
