@@ -77,7 +77,7 @@ drawParticle = particle => {
 
     var c = color(255, 0, 0);
     fill(c);
-    ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.2 * 2));
+    ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.27 * 2));
 };
 
 drawParticles = frame => {

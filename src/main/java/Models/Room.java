@@ -14,12 +14,12 @@ public class Room {
     private Double roomSize;
     private Double doorWidth;
 
-    private Double Rmin = 0.15; // m
-    private Double Rmax = 0.32; // m
-    private Double maxSpeed = 0.6; // m/s
+    private Double Rmin = 0.2; // m
+    private Double Rmax = 0.37; // m
+    private Double maxSpeed = 4.0; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
-    private double tau = 0.40;
+    private double tau = 0.20;
 
     private Double deltaT = 0.01; // s
     private Double simulationTime = 90.0; // s
@@ -72,7 +72,7 @@ public class Room {
                 Double speed, radius;
                 if (personCollisions.size() == 0 && wallsCollisions.size() == 0) {
                     // Not colliding
-                    if (person.getPosition().getX() > roomSize || person.getPosition().subtract(escapePoint).norm() < 0.3) {
+                    if (person.getPosition().getX() > roomSize || person.getPosition().subtract(escapePoint).norm() < doorWidth/2) {
                         // Got out
                         velocityVersor = new Vector(100.0, escapePoint.getY()).subtract(person.getPosition()).normalize();
                     } else {
