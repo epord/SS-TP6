@@ -50,13 +50,14 @@ getParticlesFromFrame = frame => {
 }
 
 var current_frame = 0;
-var frame_skipping = 1; // amount of frames to skip
+var frame_skipping = 0; // amount of frames to skip
 function draw() {
     background(24);
 
     drawParticles(current_frame);
     drawWalls();
     drawFrameRate();
+    drawTime();
 
     current_frame = (current_frame + (1 + frame_skipping)) % frames;
 }
@@ -71,26 +72,35 @@ drawWalls = () => {
 };
 
 drawParticle = particle => {
-    var c = color(255, 0, 0, 127);
+    var c = color(255, 0, 0, 65);
     fill(c);
+    noStroke();
     ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(particle.r * 2));
 
     var c = color(255, 0, 0);
     fill(c);
+    stroke(0)
+    strokeWeight(1);
     ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.2 * 2));
-};
+}
 
 drawParticles = frame => {
     frames_state[frame].forEach(p => {
-        drawParticle(p)
+        drawParticle(p);
     })
-};
+}
 
 drawFrameRate = () => {
     var fps = frameRate();
     fill(255);
     stroke(0);
     text("FPS: " + fps.toFixed(2), 10, height - 10);
+}
+
+drawTime = () => {
+    fill(255);
+    stroke(0);
+    text((current_frame/60).toFixed(2) + " s", width - 100, height - 10);
 }
 
 function world2canvas(value) {

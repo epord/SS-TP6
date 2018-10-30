@@ -1,6 +1,5 @@
 package Models;
 
-import CellIndexMethod.CellGrid;
 import Helpers.AnimationBuilder;
 import Helpers.FileManager;
 
@@ -17,13 +16,13 @@ public class Room {
 
     private Double Rmin = 0.2; // m
     private Double Rmax = 0.37; // m
-    private Double maxSpeed = 1.2; // m/s
+    private Double maxSpeed = 1.0; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
-    private double tau = 0.20;
+    private double tau = 0.50;
 
     private Double deltaT = 0.05; // s
-    private Double simulationTime = 20.0; // s
+    private Double simulationTime = 300.0; // s
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
 
