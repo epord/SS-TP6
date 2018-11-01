@@ -14,10 +14,9 @@ public class Room {
     private Double roomSize;
     private Double doorWidth;
 
-    private Double Rmin = 0.15; // m
-    private Double Rmax = 0.32; // m
-    private Double maxSpeed = 3.0; // m/s
-    private Double escapingSpeed = maxSpeed; // m/s
+    private Double Rmin; // m
+    private Double Rmax; // m
+    private Double maxSpeed; // m/s
     private double beta = 1.0;
     private double tau = 0.50;
 
@@ -26,10 +25,13 @@ public class Room {
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
 
-    public Room(List<Particle> persons, Double roomSize, Double doorWidth) {
+    public Room(List<Particle> persons, Double roomSize, Double doorWidth, Double speed, Double rmin, Double rmax) {
         this.persons = persons;
         this.roomSize = roomSize;
         this.doorWidth = doorWidth;
+        this.maxSpeed = speed;
+        this.Rmax = rmax;
+        this.Rmin = rmin;
 
         this.walls = generateWalls(roomSize, doorWidth);
         this.escapePoint = new Vector(roomSize, roomSize/2);
@@ -86,7 +88,7 @@ public class Room {
                         velocityVersor = velocityVersor.add(wall.getNormalVersor());
                     }
                     velocityVersor = velocityVersor.normalize();
-                    speed = escapingSpeed;
+                    speed = maxSpeed;
                     radius = Rmin;
                 }
                 Vector velocity = velocityVersor.dot(speed);
