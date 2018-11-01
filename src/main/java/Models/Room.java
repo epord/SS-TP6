@@ -16,7 +16,7 @@ public class Room {
 
     private Double Rmin = 0.15; // m
     private Double Rmax = 0.32; // m
-    private Double maxSpeed = 1.0; // m/s
+    private Double maxSpeed = 3.0; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
     private double tau = 0.50;

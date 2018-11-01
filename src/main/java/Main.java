@@ -26,7 +26,7 @@ public class Main {
         System.out.println("Escaping...");
         List<Double> escapeTimes = room.simulateEscape();
         System.out.println("The escape took " + escapeTimes.get(escapeTimes.size() - 1) + "s\n");
-        System.out.println(escapeTimes);
+        System.out.println(escapeTimes + "\n");
 
         System.out.println("Escape simulated finished in " + ((System.currentTimeMillis() - timeCheckpoint)/1000.0) + "s");
         System.out.println("Total time elapsed: " + ((System.currentTimeMillis() - startTime)/1000.0) + "s");
