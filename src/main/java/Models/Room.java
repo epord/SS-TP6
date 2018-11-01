@@ -2,9 +2,9 @@ package Models;
 
 import Helpers.AnimationBuilder;
 import Helpers.FileManager;
+import javafx.util.Pair;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Room {
@@ -14,15 +14,15 @@ public class Room {
     private Double roomSize;
     private Double doorWidth;
 
-    private Double Rmin = 0.2; // m
-    private Double Rmax = 0.37; // m
+    private Double Rmin = 0.15; // m
+    private Double Rmax = 0.32; // m
     private Double maxSpeed = 1.0; // m/s
     private Double escapingSpeed = maxSpeed; // m/s
     private double beta = 1.0;
     private double tau = 0.50;
 
     private Double deltaT = 0.05; // s
-    private Double simulationTime = 300.0; // s
+    private Double simulationTime = 1000.0; // s
     private Double animationFramePerSecond = 60.0; // fps
     private Integer animationCurrentFrame = 0;
 
@@ -44,19 +44,15 @@ public class Room {
         return Arrays.asList(top, left, bottom, right1, right2);
     }
 
-    public void addWall(Wall wall) {
-        walls.add(wall);
-    }
-
-    public void addPerson(Particle person) {
-        persons.add(person);
-    }
-
-    public void simulateEscape() {
+    public List<Double> simulateEscape() {
         AnimationBuilder ab = new AnimationBuilder(walls);
         FileManager fm = new FileManager();
 
-        for (Double t = 0.0; t < simulationTime; t += deltaT) {
+        List<Double> exitTimes = new ArrayList<>();
+        Set<Particle> exitedParticles = new HashSet<>();
+
+        Double t;
+        for (t = 0.0; t < simulationTime && persons.size() > 0; t += deltaT) {
             persons = persons.parallelStream().map(person -> {
                 List<Particle> personCollisions = persons
                                             .parallelStream()
@@ -98,12 +94,21 @@ public class Room {
                 return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
             }).collect(Collectors.toList());
 
+            final Double currentTime = t;
+            persons.stream().forEach(p -> {
+                if (p.getPosition().getX() > roomSize && !exitedParticles.contains(p)) {
+                    exitTimes.add(currentTime);
+                    exitedParticles.add(p);
+                }
+            });
 
             deleteExitedPersons();
             generateAnimationFrame(ab, t);
-        }
 
+        }
         fm.writeString("p5/frontend/output.txt", ab.getString());
+
+        return exitTimes;
     }
 
     private void deleteExitedPersons() {

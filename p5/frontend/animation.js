@@ -6,6 +6,7 @@ var frames_state = [];
 var canvas_size = 800;
 var world_size = 22;
 var walls = [];
+var fps = 60;
 
 
 function preload() {
@@ -13,7 +14,7 @@ function preload() {
 }
 
 function setup() {
-    frameRate(60);
+    frameRate(fps);
     frames = parseInt(file.length-1);
     createCanvas(canvas_size, canvas_size);
 
@@ -100,7 +101,7 @@ drawFrameRate = () => {
 drawTime = () => {
     fill(255);
     stroke(0);
-    text((current_frame/60).toFixed(2) + " s", width - 100, height - 10);
+    text((current_frame/fps).toFixed(2) + " s", width - 100, height - 10);
 }
 
 function world2canvas(value) {
