@@ -1,5 +1,7 @@
 package Helpers;
 
+import javafx.util.Pair;
+
 import java.awt.*;
 import java.util.Arrays;
 import java.util.List;
@@ -21,8 +23,7 @@ public class OctaveBuilder {
     }
 
 
-
-    public static StringBuilder plot(List<List<Double>> lists){
+    public static StringBuilder plot(List<List<Double>> lists, String xLabel, String yLabel){
         StringBuilder sb = new StringBuilder();
 
         defineLists(lists, "a", sb);
@@ -35,8 +36,8 @@ public class OctaveBuilder {
         sb.setLength(sb.length()-1);
         sb.append(")\n");
 
-        sb.append("xlabel (\"Cantidad de particulas evacuadas\");\n");
-        sb.append("ylabel (\"Tiempo [s]\");\n");
+        sb.append("xlabel (\"" + xLabel + "\");\n");
+        sb.append("ylabel (\"" + yLabel + "\");\n");
         return sb;
     }
 
@@ -50,7 +51,7 @@ public class OctaveBuilder {
         return sb;
     }
 
-    public static StringBuilder plotMean(List<List<Double>> lists){
+    public static StringBuilder plotMean(List<List<Double>> lists, String xLabel, String yLabel){
         StringBuilder sb = new StringBuilder();
 
         defineLists(lists, "a", sb);
@@ -59,8 +60,8 @@ public class OctaveBuilder {
 
         sb.append("errorbar([1:size(_mean)(2)], _mean, _std)\n");
 
-        sb.append("xlabel (\"Cantidad de particulas evacuadas\");\n");
-        sb.append("ylabel (\"Tiempo [s]\");\n");
+        sb.append("xlabel (\"" + xLabel + "\");\n");
+        sb.append("ylabel (\"" + yLabel + "\");\n");
         return sb;
     }
     
@@ -80,7 +81,7 @@ public class OctaveBuilder {
         removeLast(sb);
         sb.append("];\n");
 
-        sb.append("_stds=[");
+        sb.append("stds=[");
         for (int i = 0; i < lists.size(); i++) {
             sb.append("_std"+i).append("(end),");
         }
@@ -104,6 +105,77 @@ public class OctaveBuilder {
         for (int i = 0; i < lists.size(); i++) {
             addList(variableName+i,lists.get(i),sb);
         }
+        return sb;
+    }
+
+    public static StringBuilder plotFlow(List<List<Pair<Double, Double>>> flows, String xLabel, String yLabel){
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < flows.size(); i++) {
+            sb.append("t"+i).append("=[");
+            for (int j = 0; j < flows.get(i).size(); j++) {
+                sb.append(flows.get(i).get(j).getKey()).append(",");
+            }
+            sb.setLength(sb.length()-1);
+            sb.append("];\n");
+
+            sb.append("f"+i).append("=[");
+            for (int j = 0; j < flows.get(i).size(); j++) {
+                sb.append(flows.get(i).get(j).getValue()).append(",");
+            }
+            sb.setLength(sb.length()-1);
+            sb.append("];\n");
+        }
+
+        sb.append("plot(");
+        for (int i = 0; i < flows.size(); i++) {
+            sb.append("t"+i).append(",f").append(i).append(",");
+        }
+        sb.setLength(sb.length()-1);
+        sb.append(")\n");
+
+        sb.append("xlabel (\"" + xLabel + "\");\n");
+        sb.append("ylabel (\"" + yLabel + "\");\n");
+        return sb;
+    }
+
+    public static StringBuilder plotFlowMean(List<List<Pair<Double, Double>>> flows, String xLabel, String yLabel){
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < flows.size(); i++) {
+            sb.append("t"+i).append("=[");
+            for (int j = 0; j < flows.get(i).size(); j++) {
+                sb.append(flows.get(i).get(j).getKey()).append(",");
+            }
+            sb.setLength(sb.length()-1);
+            sb.append("];\n");
+
+            sb.append("f"+i).append("=[");
+            for (int j = 0; j < flows.get(i).size(); j++) {
+                sb.append(flows.get(i).get(j).getValue()).append(",");
+            }
+            sb.setLength(sb.length()-1);
+            sb.append("];\n");
+        }
+
+        sb.append("_mean=mean([");
+        for (int i = 0; i < flows.size(); i++) {
+            sb.append("f").append(i).append(";");
+        }
+        sb.setLength(sb.length()-1);
+        sb.append("]);\n");
+
+        sb.append("_std=std([");
+        for (int i = 0; i < flows.size(); i++) {
+            sb.append("f").append(i).append(";");
+        }
+        sb.setLength(sb.length()-1);
+        sb.append("]);\n");
+
+        sb.append("errorbar(t0, _mean, _std)\n");
+
+        sb.append("xlabel (\"" + xLabel + "\");\n");
+        sb.append("ylabel (\"" + yLabel + "\");\n");
         return sb;
     }
 }
