@@ -41,10 +41,12 @@ readFrames = () => {
 getParticlesFromFrame = frame => {
     frame = frame.split(" ");
     particles = [];
-    for (let i = 0; i < frame.length; i += 3) {
-        particles.push({x: parseFloat(frame[i]),
-            y: parseFloat(frame[i+1]),
-            r: parseFloat(frame[i+2]),
+    for (let i = 0; i < frame.length; i += 4) {
+        particles.push({
+            id: parseInt(frame[i]),
+            x: parseFloat(frame[i+1]),
+            y: parseFloat(frame[i+2]),
+            r: parseFloat(frame[i+3]),
         });
     }
     return particles;
@@ -82,7 +84,11 @@ drawParticle = particle => {
     fill(c);
     stroke(0)
     strokeWeight(1);
-    ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.15 * 2));
+    if (particle.id >= 0) {
+        ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.15 * 2));
+    } else {
+        ellipse(world2canvas(particle.x + 1), canvas_size-world2canvas(particle.y + 1), world2canvas(0.05 * 2));
+    }
 }
 
 drawParticles = frame => {

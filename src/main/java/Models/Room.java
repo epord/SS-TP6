@@ -46,8 +46,8 @@ public class Room {
     }
 
     private List<Particle> generateWallsEdgesParticles() {
-    	Particle p1 = new Particle(-1, new Vector(roomSize, (roomSize - doorWidth)/2), Double.MAX_VALUE, 0.01);
-    	Particle p2 = new Particle(-2, new Vector(roomSize, (roomSize + doorWidth)/2), Double.MAX_VALUE, 0.01);
+    	Particle p1 = new Particle(-1, new Vector(roomSize, (roomSize - doorWidth)/2), Double.MAX_VALUE, 0.00001);
+    	Particle p2 = new Particle(-2, new Vector(roomSize, (roomSize + doorWidth)/2), Double.MAX_VALUE, 0.00001);
     	List<Particle> particles = Arrays.asList(p1, p2);
     	persons.addAll(particles);
     	return Arrays.asList(p1, p2);
@@ -87,7 +87,11 @@ public class Room {
                         velocityVersor = escapePoint.subtract(person.getPosition()).normalize();
                     }
                     speed = maxSpeed * Math.pow((person.getRadius() - Rmin) / (Rmax - Rmin), beta);
-                    radius = Math.min(person.getRadius() + Rmax / (tau / deltaT), Rmax);
+                    if (!staticParticlesManager.isStatic(person)) {
+						radius = Math.min(person.getRadius() + Rmax / (tau / deltaT), Rmax);
+					} else {
+                    	radius = person.getRadius();
+					}
                 } else {
                     // Colliding
                     velocityVersor = new Vector();
@@ -99,7 +103,11 @@ public class Room {
                     }
                     velocityVersor = velocityVersor.normalize();
                     speed = maxSpeed;
-                    radius = Rmin;
+					if (!staticParticlesManager.isStatic(person)) {
+						radius = Rmin;
+					} else {
+						radius = person.getRadius();
+					}
                 }
                 Vector velocity = velocityVersor.dot(speed);
                 if (!staticParticlesManager.isStatic(person)) {

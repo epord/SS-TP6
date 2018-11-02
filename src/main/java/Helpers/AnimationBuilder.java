@@ -21,6 +21,7 @@ public class AnimationBuilder {
 
     public void addParticlesforNextFrame(Collection<Particle> particles) {
         for (Particle p : particles) {
+            sb.append(String.format(new Locale("en", "us"),"%s ", p.getID()));
             sb.append(String.format(new Locale("en", "us"),"%."+precision+"f ", p.getPosition().getX()));
             sb.append(String.format(new Locale("en", "us"),"%."+precision+"f ", p.getPosition().getY()));
             sb.append(String.format(new Locale("en", "us"),"%."+precision+"f ", p.getRadius()));
