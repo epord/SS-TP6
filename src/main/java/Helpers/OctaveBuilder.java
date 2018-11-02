@@ -34,6 +34,9 @@ public class OctaveBuilder {
         }
         sb.setLength(sb.length()-1);
         sb.append(")\n");
+
+        sb.append("xlabel (\"Cantidad de particulas evacuadas\");\n");
+        sb.append("ylabel (\"Tiempo [s]\");\n");
         return sb;
     }
 
@@ -51,10 +54,13 @@ public class OctaveBuilder {
         StringBuilder sb = new StringBuilder();
 
         defineLists(lists, "a", sb);
-        addOperator("mean","mean", "a", lists,sb);
-        addOperator("std","std", "a", lists,sb);
+        addOperator("_mean","mean", "a", lists,sb);
+        addOperator("_std","std", "a", lists,sb);
 
-        sb.append("errorbar([1:size(mean)(2)], mean, std)\n");
+        sb.append("errorbar([1:size(_mean)(2)], _mean, _std)\n");
+
+        sb.append("xlabel (\"Cantidad de particulas evacuadas\");\n");
+        sb.append("ylabel (\"Tiempo [s]\");\n");
         return sb;
     }
     
@@ -63,26 +69,29 @@ public class OctaveBuilder {
 
         for (int i = 0; i < lists.size(); i++) {
             defineLists(lists.get(i), "a"+i, sb);
-            addOperator("std"+i,"std", "a"+i, lists.get(i),sb);
-            addOperator("mean"+i,"mean", "a"+i, lists.get(i),sb);
+            addOperator("_std"+i,"std", "a"+i, lists.get(i),sb);
+            addOperator("_mean"+i,"mean", "a"+i, lists.get(i),sb);
         }
 
         sb.append("means=[");
         for (int i = 0; i < lists.size(); i++) {
-            sb.append("mean"+i).append("(end),");
+            sb.append("_mean"+i).append("(end),");
         }
         removeLast(sb);
         sb.append("];\n");
 
-        sb.append("stds=[");
+        sb.append("_stds=[");
         for (int i = 0; i < lists.size(); i++) {
-            sb.append("std"+i).append("(end),");
+            sb.append("_std"+i).append("(end),");
         }
         removeLast(sb);
         sb.append("];\n");
 
         defineLists(Arrays.asList(velocities), "vel", sb);
-        sb.append("errorbar(vel0,means,stds)");
+
+        sb.append("errorbar(vel0,means,stds)\n");
+        sb.append("xlabel (\"Velocidad maxima [m/s]\");\n");
+        sb.append("ylabel (\"Tiempo total de evacuacion [s]\");\n");
         return sb;
     }
 

@@ -20,15 +20,14 @@ public class Main {
     public static void main(String[] args) {
         Integer iterations = 6;
         Random random = new Random();
-//        List<List<Double>> escapeTimesList = new ArrayList<>();
-//        for (int i = 0; i < iterations; i++) {
-//            escapeTimesList.add(simulate(1.0+i*0.5,maxPeopleCount, random));
-//        }
-//        System.out.println(OctaveBuilder.plot(escapeTimesList));
-//        System.out.println(OctaveBuilder.plotMean(escapeTimesList));
-//        System.out.println(OctaveBuilder.plotMean(escapeTimesList));
+        List<List<Double>> escapeTimesList = new ArrayList<>();
+        for (int i = 0; i < iterations; i++) {
+            escapeTimesList.add(simulate(1.0,maxPeopleCount, random));
+        }
+        System.out.println(OctaveBuilder.plot(escapeTimesList));
+        System.out.println(OctaveBuilder.plotMean(escapeTimesList));
 
-        simulateSpeeds(1.0,4.0,0.5,3,random);
+//        simulateSpeeds(3.0,4.0,0.5,3,random);
     }
 
     private static void simulateSpeeds(Double start, Double end, Double inteval, Integer iterations, Random random){
