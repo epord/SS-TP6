@@ -18,16 +18,32 @@ public class Main {
     private static Double rmax = 0.37;
 
     public static void main(String[] args) {
-        Integer iterations = 6;
+        Integer iterations = 2;
+        Integer flowHalfWindow = 10;
         Random random = new Random();
         List<List<Double>> escapeTimesList = new ArrayList<>();
+        List<List<Pair<Double, Double>>> flows = new ArrayList<>();
         for (int i = 0; i < iterations; i++) {
-            escapeTimesList.add(simulate(1.0,maxPeopleCount, random));
+            List<Double> exitTimes = simulate(1.0,maxPeopleCount, random);
+            escapeTimesList.add(exitTimes);
+            flows.add(calculateFlow(exitTimes, flowHalfWindow));
         }
-        System.out.println(OctaveBuilder.plot(escapeTimesList));
-        System.out.println(OctaveBuilder.plotMean(escapeTimesList));
+        System.out.println(OctaveBuilder.plot(escapeTimesList, "Cantidad de particulas evacuadas", "Tiempo [s]"));
+        System.out.println(OctaveBuilder.plotMean(escapeTimesList, "Cantidad de particulas evacuadas", "Tiempo [s]"));
+        System.out.println(OctaveBuilder.plotFlow(flows,"Tiempo [s]", "Caudal [particulas/s]"));
+        System.out.println(OctaveBuilder.plotFlowMean(flows, "Tiempo [s]", "Caudal [particulas/s]"));
 
-//        simulateSpeeds(3.0,4.0,0.5,3,random);
+//        simulateSpeeds(1.0,4.0,0.5,3,random);
+    }
+
+    public static List<Pair<Double, Double>> calculateFlow(List<Double> times, Integer windowHalfSize) {
+        List<Pair<Double, Double>> flow = new ArrayList<>();
+
+        for (int i = windowHalfSize; i < times.size() - 1 - windowHalfSize; i++) {
+            flow.add(new Pair(times.get(i), (2 * windowHalfSize + 1) / (times.get(i+windowHalfSize) - times.get(i-windowHalfSize))));
+        }
+
+        return flow;
     }
 
     private static void simulateSpeeds(Double start, Double end, Double inteval, Integer iterations, Random random){
