@@ -25,7 +25,7 @@ public class OctaveBuilder {
     public static StringBuilder plot(List<List<Double>> lists){
         StringBuilder sb = new StringBuilder();
 
-        defineLists(lists,sb);
+        defineLists(lists, "a", sb);
 
         sb.append("plot(");
         for (int i = 0; i < lists.size(); i++) {
@@ -37,10 +37,10 @@ public class OctaveBuilder {
         return sb;
     }
 
-    public static StringBuilder addOperator(String name, String operator, List<?> list, StringBuilder sb){
+    public static StringBuilder addOperator(String name, String operator, String variableName, List<?> list, StringBuilder sb){
         sb.append(name).append("=").append(operator).append("([");
         for (int i = 0; i < list.size(); i++) {
-            sb.append("a"+i).append(";");
+            sb.append(variableName).append(i).append(";");
         }
         sb.setLength(sb.length()-1);
         sb.append("]);\n");
@@ -50,9 +50,9 @@ public class OctaveBuilder {
     public static StringBuilder plotMean(List<List<Double>> lists){
         StringBuilder sb = new StringBuilder();
 
-        defineLists(lists,sb);
-        addOperator("mean","mean",lists,sb);
-        addOperator("std","std",lists,sb);
+        defineLists(lists, "a", sb);
+        addOperator("mean","mean", "a", lists,sb);
+        addOperator("std","std", "a", lists,sb);
 
         sb.append("errorbar([1:size(mean)(2)], mean, std)\n");
         return sb;
@@ -62,8 +62,9 @@ public class OctaveBuilder {
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < lists.size(); i++) {
-            addOperator("std"+i,"std",lists.get(i),sb);
-            addOperator("mean"+i,"mean",lists.get(i),sb);
+            defineLists(lists.get(i), "a"+i, sb);
+            addOperator("std"+i,"std", "a"+i, lists.get(i),sb);
+            addOperator("mean"+i,"mean", "a"+i, lists.get(i),sb);
         }
 
         sb.append("means=[");
@@ -71,28 +72,28 @@ public class OctaveBuilder {
             sb.append("mean"+i).append("(end),");
         }
         removeLast(sb);
-        sb.append("]");
+        sb.append("];\n");
 
         sb.append("stds=[");
         for (int i = 0; i < lists.size(); i++) {
             sb.append("std"+i).append("(end),");
         }
         removeLast(sb);
-        sb.append("]");
+        sb.append("];\n");
 
-        defineLists(Arrays.asList(velocities),sb);
-        sb.append("errorbar(a0,means,stds)");
+        defineLists(Arrays.asList(velocities), "vel", sb);
+        sb.append("errorbar(vel0,means,stds)");
         return sb;
     }
 
     public static StringBuilder removeLast(StringBuilder sb){
-        sb.setLength(sb.length());
+        sb.setLength(sb.length()-1);
         return sb;
     }
 
-    public static StringBuilder defineLists(List<List<Double>> lists, StringBuilder sb){
+    public static StringBuilder defineLists(List<List<Double>> lists, String variableName, StringBuilder sb){
         for (int i = 0; i < lists.size(); i++) {
-            addList("a"+i,lists.get(i),sb);
+            addList(variableName+i,lists.get(i),sb);
         }
         return sb;
     }
