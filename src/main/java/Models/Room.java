@@ -2,7 +2,6 @@ package Models;
 
 import Helpers.AnimationBuilder;
 import Helpers.FileManager;
-import javafx.util.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,9 +45,20 @@ public class Room {
         return Arrays.asList(top, left, bottom, right1, right2);
     }
 
+    private List<Particle> generateWallsEdgesParticles() {
+    	Particle p1 = new Particle(-1, new Vector(roomSize, (roomSize - doorWidth)/2), Double.MAX_VALUE, 0.01);
+    	Particle p2 = new Particle(-2, new Vector(roomSize, (roomSize + doorWidth)/2), Double.MAX_VALUE, 0.01);
+    	List<Particle> particles = Arrays.asList(p1, p2);
+    	persons.addAll(particles);
+    	return Arrays.asList(p1, p2);
+	}
+
     public List<Double> simulateEscape() {
         AnimationBuilder ab = new AnimationBuilder(walls);
         FileManager fm = new FileManager();
+        StaticParticlesManager staticParticlesManager = new StaticParticlesManager();
+        staticParticlesManager.addStaticParticles(generateWallsEdgesParticles());
+
 
         List<Double> exitTimes = new ArrayList<>();
         Set<Particle> exitedParticles = new HashSet<>();
@@ -92,7 +102,11 @@ public class Room {
                     radius = Rmin;
                 }
                 Vector velocity = velocityVersor.dot(speed);
-                position = person.getPosition().add(velocity.dot(deltaT));
+                if (!staticParticlesManager.isStatic(person)) {
+					position = person.getPosition().add(velocity.dot(deltaT));
+				} else {
+                	position = person.getPosition();
+				}
                 return person.getCopyWithRadius(radius).getCopyWithPosition(position).getCopyWithVelocity(velocity);
             }).collect(Collectors.toList());
 
